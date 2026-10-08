@@ -1,17 +1,3 @@
-It must list which AI model(s)/tools you used, document the development process from start to finish 
-(including which parts of the code were written or substantially modified by you), and include important, 
-non-trivial prompts verbatim rather than AI-written summaries of them. As a whole, this file should make it 
-obvious that you invested roughly 8 hours of work. As a very rough gauge, an 8-hour project that starts from a 
-clear plan and then iterates from there might produce somewhere in the range of 15 to 40 prompts worth logging. 
-Treat that as a rough estimate rather than a target, since we'd rather have a handful of well-constructed prompts over an artificially stretched list.
-Two specific things we want to see in this file:
-
-Which tool for which job. A sentence or two on which model(s) or tool(s) you used for which parts of the work, and why. 
-Brainstorming, writing code, and debugging are often best served by different tools, and choosing deliberately is a skill we want you practicing.
-One place AI got it wrong. Describe at least one instance where a tool was confidently incorrect, proposed something that couldn't work, or introduced 
-a bug it then couldn't find, and what you did about it. One short paragraph is plenty. These observations are what we use to build the class's shared
-best practices, and they tend to make for good discussion in your evaluation.
-
 ## Brainstorming stage
 I came up with the idea of a travel journal and then divided the high level idea into small parts. 
 ## First draft
@@ -55,8 +41,18 @@ Leave location search, social sharing, AI-generated writing, flight paths, and o
 From there, I used CodeX for the remaining working period. 
 
 ## Middle Stage
-I changed from google maps API to 
+I changed from google maps API to Nominatim’s API for place searches without an API key. I wanted to try out a keyless API since I have used an API with a key for the previous assignment. 
+-  OK, I want a keyless search but I also want the amount of details in the visual of my map compared to google maps, which option should I choose.
+-  Choose Leaflet + OpenStreetMap for the map, with a keyless search service. That’s the best fit for your student project. You’ll get much more detail than the current country-outline map, including street-level views. It won’t exactly match Google’s business listings, satellite imagery, or Street View. Detail varies by location. Your cartoon panels and custom pins can remain. Leaflet
+For search, Nominatim is a possible keyless option for a small, low-traffic project, but you must deliberately accept its usage policy:
+Search only after clicking Find or pressing Enter—no live autocomplete.
+Maximum one request per second across the whole app, not per visitor.
+Identify the application, display attribution, cache repeated searches, and allow switching providers.
+A small Python backend can enforce those limits and cache results without needing an API key.
+OpenStreetMap’s public map tiles also require visible attribution, normal caching, and no bulk/offline downloads; availability isn’t guaranteed. Tile usage policy
+
 I then made edits to the design by asking CodeX:
+
 - Here the text box is blocking the map, give user the option to search at first, presenting the big text box while the background is darker.
 The user can also click anywhere else to enter the map and drag to pin by themselves.
 - Updated the local preview:
@@ -64,3 +60,48 @@ Large search card opens over a darkened map.
 Click outside, press Escape, or choose Explore the map to dismiss it.
 Drag the map, then tap a location to place a pin.
 A small Search places button reopens search.
+- OK, I want to add in a login-in function that stores each user's data separately, with a backend to do this
+- For your project, adding login involves these steps:
+1. Create the frontend form.
+   Add Sign in and Create account options with username and password fields in HTML, styled with CSS.
+2. Send requests to the backend.
+   JavaScript reads the form and sends the credentials to a Python API endpoint using fetch() over HTTPS.
+3. Connect the backend to Supabase Authentication.
+   The backend reads Supabase configuration from environment variables. Supabase creates accounts and verifies passwords—your own database tables shouldn’t store plaintext passwords.
+4. Establish a session.
+   After successful authentication, the backend creates a session and sends an HttpOnly cookie so subsequent requests identify the signed-in user.
+5. Protect personal data.
+   Associate memories, flights, and profiles with the authenticated user’s ID. Backend checks and Supabase database policies restrict access to that user’s records.
+6. Update the interface.
+   Show the username, avatar, and Sign out button. Load that account’s saved data and display helpful login errors.
+7. Implement logout and test.
+   Invalidate the session when signing out. Test registration, incorrect passwords, persistence after refreshing, and separation between two accounts.
+- can I use somethingelse other than supabase?
+- Yes—Supabase is optional. You can keep your current map and design while replacing the backend.
+Alternative	What it offers	Trade-off
+Appwrite Cloud	Managed login, database, and private photo storage. Docs	Closest replacement; still requires a cloud project and permission setup.
+Django + SQLite	Python backend with built-in user authentication and sessions. Docs	No external authentication provider, but we must implement ownership checks, private photo serving, and persistent hosting.
+
+I originally wanted email verification as well, but involves too many privacy checks. 
+
+- the user should receive an email directly with a code
+- Yes—the user should receive a code in the email, then enter it in 飞喽. The app already supports this; Supabase’s email template needs changing.
+1. Open Supabase → Authentication → Email Templates → Confirm sign up.
+2. Replace the email body with:<h2>Welcome to 飞喽!</h2>
+   <p>Your verification code is:</p>
+   <h1>{{ .Token }}</h1>
+   <p>Return to 飞喽 and enter this code under Confirm email.</p>
+   <p>If you didn’t create an account, ignore this email.</p>
+3. Click Save. Keep {{ .Token }} exactly as written—Supabase replaces it with the verification code. Supabase documentation
+4. Under Authentication → URL Configuration, change Site URL to:http://127.0.0.1:4173
+Then return to 飞喽. For an unconfirmed account, try Create an account again to request a fresh email, then enter its code under Confirm email.
+The old email won’t change, and its expired link should no longer be used.
+- I don't want to use email verification, I just need a simple sign up/create account if the username and password match in the user database
+
+More design: 
+- I want to create a menu bar that has serverla functions: 1. memories: allows user to browse their memories, which are sorted in chronological order from most recent. 2: Flight tracker: allows user to enter/fill in a boarding passes about their travels and the result will show as flight lines on the map with airplane icon. 3. view profile: views personal information such as birthday, name, where are you from, and more.
+
+## Where AI got wrong
+AI was incorrect about how I wanted with the flight & boarding pass function. CodeX thought I wanted a boarding pass separate with the flight path, in which the two are not updated together. I later reinforced that the flight path should automatically appear on the map once the boarding pass is added in the flight tracking section. 
+
+
