@@ -101,6 +101,9 @@ The old email won’t change, and its expired link should no longer be used.
 More design: 
 - I want to create a menu bar that has serverla functions: 1. memories: allows user to browse their memories, which are sorted in chronological order from most recent. 2: Flight tracker: allows user to enter/fill in a boarding passes about their travels and the result will show as flight lines on the map with airplane icon. 3. view profile: views personal information such as birthday, name, where are you from, and more.
 
+## AI Tools
+I used CodeX for building the essential features and telling me the steps to edit in VS code. I switched back to ChatGPT mode for debugging. Throughout the beginning stages, I tried to move to Claude since I am more familiar, but I realized that CodeX is to some extent better at grasping the functions and how the features fit with the entire design. Also, CodeX is a little faster than Claude. 
+
 ## Where AI got wrong
 AI was incorrect about how I wanted with the flight & boarding pass function. CodeX thought I wanted a boarding pass separate with the flight path, in which the two are not updated together. I later reinforced that the flight path should automatically appear on the map once the boarding pass is added in the flight tracking section. 
 
