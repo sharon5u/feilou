@@ -101,10 +101,57 @@ The old email won’t change, and its expired link should no longer be used.
 More design: 
 - I want to create a menu bar that has serverla functions: 1. memories: allows user to browse their memories, which are sorted in chronological order from most recent. 2: Flight tracker: allows user to enter/fill in a boarding passes about their travels and the result will show as flight lines on the map with airplane icon. 3. view profile: views personal information such as birthday, name, where are you from, and more.
 
+- there is no create an account choice, create this option in beside sign in once the user clicks sign in
+- OK, I want to make the user profile more appealing rather than just a name. The user should be able to change their cartoon animal character (mouse, cow, tiger, bunny, dragon, snake, horse, sheep, monkey, chicken, dog, pig), which then shows up above the name section in the screen shot.
+- But when I save profile, the image at right top goes back to the previous bunny
+
+I also questioned some of the steps CodeX told me to do: 
+
+- if i use the place holders, how is supabase going to work?
+- You’ll have two separate files:
+File	What goes inside	Purpose
+.env	Your real Supabase URL and publishable key	Python reads these to connect to Supabase. This file stays on your computer and is ignored by Git.
+.env.example	Placeholder values	A template you can safely upload to GitHub. The app doesn’t read it.
+
+- OK, now what should I do to finish the log in feature to store customized data on backend
+- The login/backend code is ready. These steps connect it and confirm that it works:
+1. Finish Supabase setup
+   - Make sure you ran the contents of supabase/setup.sql successfully.
+   - Check that the entries table exists and the journal-photos storage bucket is private.
+2. Configure confirmation emails
+   In Supabase → Authentication → Email Templates → Confirm signup, save this:
+   <h2>Confirm your 飞喽 account</h2>
+   <p>Your confirmation code is: <strong>{{ .Token }}</strong></p>
+   <p>Return to 飞喽 and choose Confirm email.</p>
+   For initial testing, use your Supabase account’s email. Sending to other users requires configuring custom SMTP.
+3. Restart your Python server
+   Stop the running server with Control+C. From the feilou folder, run:
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   python3 server.py
+   If it says “Address already in use,” another server is still running—don’t start additional copies.
+4. Create your account
+   Open 飞喽, then:
+   Sign in → Create an account → enter email and password → check email → choose Confirm email → enter the code.
+5. Test your private memories
+   - Find a place and save a note with a photo.
+   - Refresh, then click its pin: both should return.
+   - Sign out: your memories should disappear.
+   - Sign back in: they should return.
+   - Test another account in an incognito window: it must not see your first account’s memories.
+You can also check Supabase’s entries table to confirm the saved record has your account’s user_id. Live storage and isolation aren’t verified until these tests pass.
+
+Keep your real values in .env. Only replace the values in .env.example with placeholders.
+Both files belong beside server.py. After saving .env, restart the server so it loads your real settings.
+
+I also asked ChatGPT for guidance in using VS code: 
+- Do I browse here to check that .env, dist/config.js, and .private/ are not included. .env.example should contain placeholders only.
+- Yes—this Changes list is the right place to check. Scroll through all 29 files. .env, config.js inside dist, and files inside .private should not appear. .env.example should appear. Click it and confirm it contains placeholders such as YOUR_PROJECT and YOUR_PUBLISHABLE_KEY, not your actual values. .gitignore should also be included.
+The visible part looks correct, but the screenshot doesn’t show the entire list.
+Once checked, click the + beside “Changes” to stage the files, review Staged Changes, enter a commit message, and click Commit.
+
 ## AI Tools
 I used CodeX for building the essential features and telling me the steps to edit in VS code. I switched back to ChatGPT mode for debugging. Throughout the beginning stages, I tried to move to Claude since I am more familiar, but I realized that CodeX is to some extent better at grasping the functions and how the features fit with the entire design. Also, CodeX is a little faster than Claude. 
 
 ## Where AI got wrong
 AI was incorrect about how I wanted with the flight & boarding pass function. CodeX thought I wanted a boarding pass separate with the flight path, in which the two are not updated together. I later reinforced that the flight path should automatically appear on the map once the boarding pass is added in the flight tracking section. 
-
-
