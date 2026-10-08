@@ -1,0 +1,4 @@
+# Install in a virtual environment for account setup and validated photo uploads.
+gunicorn==23.0.0
+python-dotenv>=1.0,<2
+Pillow>=11.3,<13

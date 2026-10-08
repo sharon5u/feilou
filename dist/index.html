@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f6f3eb" />
+    <meta
+      name="description"
+      content="飞喽 — a little journal for a very big world."
+    />
+    <title>飞喽 · Your travel journal</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232e5149'/%3E%3Ctext x='10' y='46' font-size='43' fill='white'%3E飞%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="styles.css?v=accounts-1" />
+    <link rel="stylesheet" href="theme.css?v=accounts-1" />
+    <script src="places.js?v=accounts-1" defer></script>
+    <script src="vendor/leaflet/leaflet.js" defer></script>
+    <script src="app.js?v=accounts-1" defer></script>
+  </head>
+  <body>
+    <header>
+      <button
+        id="menu-toggle"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="journal-menu"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+      <a class="brand" href="./" aria-label="飞喽 home"
+        >飞喽<span>FEILOU / TRAVEL JOURNAL</span></a
+      >
+      <div class="header-right">
+        <span class="local-label">Your little corner of the world</span>
+        <button
+          id="account-profile"
+          class="account-profile"
+          type="button"
+          aria-label="View your profile"
+          hidden
+        >
+          <span id="account-avatar" aria-hidden="true">🐰</span
+          ><span id="account-email" class="account-email"></span>
+        </button>
+        <button id="account-button" type="button">Sign in</button>
+      </div>
+    </header>
+    <nav id="journal-menu" class="journal-menu" aria-label="Journal sections">
+      <button id="map-menu" type="button" aria-pressed="true">◎ Map</button>
+      <button id="all-memories" type="button" aria-pressed="false">
+        ▤ Memories <span id="count">0</span>
+      </button>
+      <button id="flight-menu" type="button" aria-pressed="false">
+        ✈ Flight tracker
+      </button>
+      <button id="profile-menu" type="button" aria-pressed="false">
+        ☺ View profile
+      </button>
+    </nav>
+    <button
+      id="menu-backdrop"
+      type="button"
+      aria-label="Close navigation"
+      hidden
+    ></button>
+    <main>
+      <section class="map-area" aria-label="Interactive world map">
+        <button id="open-search" class="map-search-toggle" type="button">
+          ⌕ Search places
+        </button>
+        <div id="search-overlay" class="search-overlay" hidden>
+          <div
+            class="search-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="welcome-title"
+          >
+            <div class="map-heading">
+              <span class="eyebrow">PLACES STAY WITH US</span>
+              <h1 id="welcome-title">
+                Where did you<br />leave a little of yourself?
+              </h1>
+              <p>Find a place. Keep a feeling.</p>
+            </div>
+            <div class="search-box">
+              <form id="search-form" role="search">
+                <span aria-hidden="true">⌕</span
+                ><label class="sr-only" for="search"
+                  >Search countries, cities, or saved places</label
+                ><input
+                  id="search"
+                  type="search"
+                  placeholder="Search a country, city, or place…"
+                  autocomplete="off"
+                  minlength="2"
+                  maxlength="160"
+                /><button aria-label="Search places">Find</button>
+              </form>
+              <div id="search-results" aria-live="polite"></div>
+            </div>
+            <button id="explore-map" class="explore-button" type="button">
+              Explore the map
+            </button>
+            <p class="search-hint">
+              Press Find to search, or click outside to explore. Drag the map,
+              then tap a place to pin it.
+            </p>
+            <p class="search-credit">
+              Search: <a href="https://nominatim.org/">Nominatim</a> ·
+              <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a
+              >. Search text is sent to this service; notes and photos are
+              stored privately in your account.
+            </p>
+          </div>
+        </div>
+        <div
+          id="map"
+          tabindex="0"
+          aria-label="World map. Drag to pan; use plus and minus to zoom. Search to select a location with the keyboard."
+        ></div>
+        <div class="map-controls">
+          <button id="zoom-in" aria-label="Zoom in">+</button
+          ><button id="zoom-out" aria-label="Zoom out">−</button
+          ><button id="reset-map" aria-label="Show whole world">⌖</button>
+        </div>
+        <div class="map-footer">
+          <span id="map-status">Loading your world…</span
+          ><span
+            ><a
+              href="https://www.openstreetmap.org/copyright"
+              target="_blank"
+              rel="noopener"
+              >© OpenStreetMap contributors</a
+            ></span
+          >
+        </div>
+        <div class="atlas-compass" aria-hidden="true">
+          <span>N</span><strong>✧</strong><small>W · E</small>
+        </div>
+        <div class="atlas-caption" aria-hidden="true">
+          THE WORLD IS YOUR SCRAPBOOK
+        </div>
+        <div class="map-note">
+          <span>✳</span> A whole world of<br />stories to remember.
+        </div>
+      </section>
+      <aside id="panel" aria-label="Travel memories">
+        <div class="panel-top">
+          <span class="eyebrow" id="panel-kicker">YOUR FIELD NOTES</span
+          ><button id="close-panel" aria-label="Close memories panel">×</button>
+        </div>
+        <div id="panel-content"></div>
+        <div class="storage-note">
+          Sign in to save your own notes and photos.
+        </div>
+      </aside>
+      <section
+        id="journal-page"
+        aria-label="Journal page"
+        hidden
+        tabindex="-1"
+      ></section>
+    </main>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <dialog id="delete-dialog">
+      <h2>Let this memory go?</h2>
+      <p>
+        This will permanently delete the note and its photos from your account.
+      </p>
+      <div class="actions">
+        <button id="cancel-delete">Keep memory</button
+        ><button id="confirm-delete" class="danger">Delete memory</button>
+      </div>
+    </dialog>
+    <dialog id="auth-dialog" aria-labelledby="auth-heading">
+      <button id="auth-close" type="button" aria-label="Close sign in">
+        ×
+      </button>
+      <h2 id="auth-heading">Your own little world.</h2>
+      <p>Sign in to keep your memories safe in your account.</p>
+      <form id="auth-form">
+        <input id="auth-mode" type="hidden" value="login" />
+        <div
+          class="auth-options"
+          role="group"
+          aria-label="Choose sign in or create an account"
+        >
+          <button type="button" data-auth-mode="login" aria-pressed="true">
+            Sign in
+          </button>
+          <button type="button" data-auth-mode="signup" aria-pressed="false">
+            Create an account
+          </button>
+        </div>
+        <label for="auth-username">Username</label>
+        <input
+          id="auth-username"
+          type="text"
+          autocomplete="username"
+          maxlength="254"
+          autocapitalize="none"
+          spellcheck="false"
+          aria-describedby="username-help"
+          required
+        />
+        <small id="username-help"
+          >3–32 letters, numbers, underscores or hyphens. Existing email
+          accounts can sign in with their email.</small
+        >
+        <label id="auth-password-label" for="auth-password">Password</label>
+        <input
+          id="auth-password"
+          type="password"
+          autocomplete="current-password"
+          minlength="8"
+          maxlength="128"
+          required
+        />
+        <small
+          >Use at least 8 characters for your password. No email
+          verification.</small
+        >
+        <p id="auth-message" role="status" aria-live="polite"></p>
+        <button id="auth-submit" class="primary" type="submit">Sign in</button>
+      </form>
+    </dialog>
+    <template id="editor-template"
+      ><form id="entry-form">
+        <button type="button" class="text-button" id="back">
+          ← Back to memories
+        </button>
+        <h2 id="editor-heading">A moment worth keeping.</h2>
+        <p class="location-caption" id="editor-location"></p>
+        <label for="title">Memory title</label
+        ><input
+          id="title"
+          name="title"
+          required
+          maxlength="100"
+          placeholder="The afternoon we got lost…"
+        /><label for="location">Place name</label
+        ><input id="location" name="location" required maxlength="160" /><label
+          for="date"
+          >Travel date</label
+        ><input id="date" name="date" type="date" required /><label for="note"
+          >Your story</label
+        ><textarea
+          id="note"
+          name="note"
+          rows="5"
+          maxlength="10000"
+          required
+          placeholder="The people, the tiny details, the way it felt."
+        ></textarea
+        ><label class="upload-zone" for="photos"
+          ><span>＋ Add a few snapshots</span
+          ><small>JPG, PNG or WebP · up to 4 photos · 5 MB each</small></label
+        ><input
+          id="photos"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+        />
+        <div id="photo-previews"></div>
+        <p class="form-error" role="alert" id="form-error"></p>
+        <button class="primary" type="submit" id="save-entry">
+          Save this memory
+        </button>
+      </form></template
+    >
+  </body>
+</html>

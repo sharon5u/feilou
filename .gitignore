@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.DS_Store
+node_modules/
+.sites-runtime/
+
+/dist/config.js
+.venv/
+__pycache__/
+*.pyc
+.cache/
+.private/
+build/
