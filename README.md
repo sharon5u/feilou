@@ -72,4 +72,5 @@ I used Codex to help develop and debug the application, including frontend layou
 ## Models, Tools
 1. LeafLet: a free, open-source JavaScript library for building interactive maps. It handles dragging and zooming the map, placing pins at saved locations, showing photos, and drawing flight routes and airplane marks.
 2. OpenStreetMap: provides the geographic map data.
-3. Supabase: authentication and data storage.
+3. Nominatim’s API for place searches without an API key.
+4. Supabase: authentication and data storage.
